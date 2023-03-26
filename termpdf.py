@@ -32,7 +32,7 @@ Keys:
     [count]G:       go to page [count]
     b:		    cycle through open documents
     s:              visual mode
-    t:              table of contents 
+    t:              table of contents
     M:              show metadata
     f:              show links on page
     r:              rotate [count] quarter turns clockwise
@@ -106,7 +106,7 @@ class Config:
                 if shutil.which(i) is not None:
                     self.URL_BROWSER = i
                     break
-    
+
     def load_config_file(self):
         config_file = os.path.expanduser(os.path.join(os.getenv("XDG_CONFIG_HOME", "~/.config"), 'termpdf.py', 'config'))
         if os.path.exists(config_file):
@@ -168,20 +168,20 @@ class Screen:
         self.stdscr = curses.initscr()
         self.stdscr.clear()
         curses.noecho()
-        curses.curs_set(0) 
+        curses.curs_set(0)
         curses.mousemask(curses.REPORT_MOUSE_POSITION
             | curses.BUTTON1_PRESSED | curses.BUTTON1_RELEASED
             | curses.BUTTON2_PRESSED | curses.BUTTON2_RELEASED
             | curses.BUTTON3_PRESSED | curses.BUTTON3_RELEASED
             | curses.BUTTON4_PRESSED | curses.BUTTON4_RELEASED
             | curses.BUTTON1_CLICKED | curses.BUTTON3_CLICKED
-            | curses.BUTTON1_DOUBLE_CLICKED 
+            | curses.BUTTON1_DOUBLE_CLICKED
             | curses.BUTTON1_TRIPLE_CLICKED
-            | curses.BUTTON2_DOUBLE_CLICKED 
+            | curses.BUTTON2_DOUBLE_CLICKED
             | curses.BUTTON2_TRIPLE_CLICKED
-            | curses.BUTTON3_DOUBLE_CLICKED 
+            | curses.BUTTON3_DOUBLE_CLICKED
             | curses.BUTTON3_TRIPLE_CLICKED
-            | curses.BUTTON4_DOUBLE_CLICKED 
+            | curses.BUTTON4_DOUBLE_CLICKED
             | curses.BUTTON4_TRIPLE_CLICKED
             | curses.BUTTON_SHIFT | curses.BUTTON_ALT
             | curses.BUTTON_CTRL)
@@ -203,13 +203,13 @@ class Screen:
         win = curses.newwin(h,w,y,x)
         win.box()
         win.addstr(1,2, '{:^{l}}'.format(header, l=(w-3)))
-        
+
         self.stdscr.clear()
         self.stdscr.refresh()
         win.refresh()
         pad = curses.newpad(length,1000)
         pad.keypad(True)
-        
+
         return win, pad
 
     def swallow_keys(self):
@@ -308,7 +308,7 @@ class Document(fitz.Document):
             json.dump(state, f)
 
     def goto_page(self, p):
-        # store prevpage 
+        # store prevpage
         self.prevpage = self.page
         # delete prevpage
         # self.clear_page(self.prevpage)
@@ -320,7 +320,7 @@ class Document(fitz.Document):
         else:
             self.page = p
         self.logicalpage = self.page_to_logical(self.page)
-    
+
     def goto_logical_page(self, p):
         p = self.logical_to_page(p)
         self.goto_page(p)
@@ -383,11 +383,11 @@ class Document(fitz.Document):
                 if label.startpage != self.page:
                     newlabels.append(label)
 
-            newlabel = PageLabelScheme(startpage=self.page, 
+            newlabel = PageLabelScheme(startpage=self.page,
                                        style=style,
                                        prefix="",
-                                       firstpagenum=count) 
-            newlabels.append(newlabel) 
+                                       firstpagenum=count)
+            newlabels.append(newlabel)
             newlabels.write(reader)
 
             writer = PdfWriter()
@@ -443,13 +443,13 @@ class Document(fitz.Document):
                     lp = prefix + roman.toRoman(lp)
                     lp = lp.lower()
                 elif style == 'alphabetic uppercase':
-                    lp = prefix + to_alphabetic(lp) 
+                    lp = prefix + to_alphabetic(lp)
                 elif style == 'alphabetic lowercase':
                     lp = prefix + to_alphabetic(lp)
                     lp = lp.lower()
                 else:
                     lp = prefix + str(lp)
-                self.logical_pages[p] = lp 
+                self.logical_pages[p] = lp
 
     def page_to_logical(self, p=None):
         if not p:
@@ -468,14 +468,14 @@ class Document(fitz.Document):
 
     def make_link(self):
         p = self.page_to_logical(self.page)
-        if self.citekey: 
+        if self.citekey:
             return '[@{}, {}]'.format(self.citekey, p)
         else:
             return '({}, {}, {})'.format(self.metadata['author'],self.metadata['title'], p)
 
     def find_target(self, target, target_text):
         # since our pct calculation is at best an estimate
-        # of the correct target page, we search for the first 
+        # of the correct target page, we search for the first
         # few words of the original page on the surrounding pages
         # until we find a match
         for i in [0,1,-1,2,-2,3,-3,4,-4,5,-5,6,-6]:
@@ -510,7 +510,7 @@ class Document(fitz.Document):
             target = int((self.pages + 1) * pct) - 1
             target = self.find_target(target, target_text)
             self.goto_page(target)
-        self.papersize = papersize 
+        self.papersize = papersize
         self.pages_to_logical_pages()
 
     def mark_all_pages_stale(self):
@@ -555,7 +555,7 @@ class Document(fitz.Document):
         mywords = [w for w in words if fitz.Rect(w[:4]) in rect]
         mywords.sort(key=itemgetter(3, 0))  # sort by y1, x0 of the word rect
         group = groupby(mywords, key=itemgetter(3))
-        text = [] 
+        text = []
         for y1, gwords in group:
             text = text + [" ".join(w[4] for w in gwords)]
         return text
@@ -569,7 +569,7 @@ class Document(fitz.Document):
         mywords = [w for w in words if fitz.Rect(w[:4]).intersects(rect)]
         mywords.sort(key=itemgetter(3, 0))  # sort by y1, x0 of the word rect
         group = groupby(mywords, key=itemgetter(3))
-        text = [] 
+        text = []
         for y1, gwords in group:
             text = text + [" ".join(w[4] for w in gwords)]
         return text
@@ -621,13 +621,13 @@ class Document(fitz.Document):
         else:
             pw = page.bound().height
             ph = page.bound().width
-        
+
         # calculate zoom factor
         fx = dw / pw
         fy = dh / ph
         factor = min(fx,fy)
         self.page_states[p].factor = factor
-    
+
         # calculate zoomed dimensions
         zw = factor * pw
         zh = factor * ph
@@ -676,7 +676,7 @@ class Document(fitz.Document):
             # transfer the image
             write_chunked(cmd, pix.samples)
 
-        if display:  
+        if display:
             # clear prevpage
             self.clear_page(self.prevpage)
             # display the image
@@ -687,7 +687,7 @@ class Document(fitz.Document):
                 bar.message = 'failed to load page ' + str(p+1)
                 bar.update(self)
 
-        self.page_states[p].stale = False 
+        self.page_states[p].stale = False
 
         scr.swallow_keys()
 
@@ -702,7 +702,7 @@ class Document(fitz.Document):
         self.page_states[self.page ].stale = True
         self.clear_page(self.page)
         scr.clear()
-        
+
         def init_pad(toc):
             win, pad = scr.create_text_win(len(toc), 'Table of Contents')
             y,x = win.getbegyx()
@@ -719,14 +719,14 @@ class Document(fitz.Document):
         keys = shortcuts()
         index = self.current_chap()
         j = 0
-       
+
         while True:
             for i, ch in enumerate(toc):
                 attr = curses.A_REVERSE if index == i else curses.A_NORMAL
                 pad.chgat(i, 0, span[i], attr)
             pad.refresh(j, 0, y + 3, x + 2, y + h - 2, x + w - 3)
             key = scr.stdscr.getch()
-            
+
             if key in keys.REFRESH:
                 scr.clear()
                 scr.get_size()
@@ -747,16 +747,16 @@ class Document(fitz.Document):
                 scr.clear()
                 self.goto_page(toc[index][2] - 1)
                 return
-            
+
             if index > j + (h - 5):
                 j += 1
             if index < j:
                 j -= 1
-   
+
     def update_metadata_from_bibtex(self):
         if not self.citekey:
             return
-        
+
         bib = bib_from_key([self.citekey])
         bib_entry = bib.entries[self.citekey]
 
@@ -779,7 +779,7 @@ class Document(fitz.Document):
                 authorNames +=  ' '.join(author.last_names)
 
         metadata['author'] = authorNames
-       
+
         if 'Keywords' in bib_entry.fields:
             metadata['keywords'] = bib_entry.fields['Keywords']
 
@@ -792,7 +792,7 @@ class Document(fitz.Document):
     def show_meta(self, bar):
 
         meta = self.metadata
-        
+
         if not meta:
             bar.message = "No metadata available"
             return
@@ -800,7 +800,7 @@ class Document(fitz.Document):
         self.page_states[self.page].stale = True
         self.clear_page(self.page)
         scr.clear()
-        
+
         def init_pad(metadata):
             win, pad = scr.create_text_win(len(meta), 'Metadata')
             y,x = win.getbegyx()
@@ -817,14 +817,14 @@ class Document(fitz.Document):
         keys = shortcuts()
         index = 0
         j = 0
-       
+
         while True:
             for i, mkey in enumerate(meta):
                 attr = curses.A_REVERSE if index == i else curses.A_NORMAL
                 pad.chgat(i, 0, span[i], attr)
             pad.refresh(j, 0, y + 3, x + 2, y + h - 2, x + w - 3)
             key = scr.stdscr.getch()
-            
+
             if key in keys.REFRESH:
                 scr.clear()
                 scr.get_size()
@@ -846,14 +846,14 @@ class Document(fitz.Document):
                 meta = self.metadata
                 win,pad,y,x,h,w,span = init_pad(meta)
             elif key in keys.OPEN:
-                # TODO edit metadata 
+                # TODO edit metadata
                 pass
-            
+
             if index > j + (h - 5):
                 j += 1
             if index < j:
                 j -= 1
-   
+
     def goto_link(self,link):
         kind = link['kind']
         # 0 == no destination
@@ -889,7 +889,7 @@ class Document(fitz.Document):
         self.page_states[self.page].stale = True
         self.clear_page(self.page)
         scr.clear()
-        
+
         def init_pad(urls):
             win, pad = scr.create_text_win(len(urls), 'URLs')
             y,x = win.getbegyx()
@@ -916,14 +916,14 @@ class Document(fitz.Document):
         keys = shortcuts()
         index = 0
         j = 0
-       
+
         while True:
             for i, url in enumerate(urls):
                 attr = curses.A_REVERSE if index == i else curses.A_NORMAL
                 pad.chgat(i, 0, span[i], attr)
             pad.refresh(j, 0, y + 3, x + 2, y + h - 2, x + w - 3)
             key = scr.stdscr.getch()
-            
+
             if key in keys.REFRESH:
                 scr.clear()
                 scr.get_size()
@@ -944,12 +944,12 @@ class Document(fitz.Document):
                 self.goto_link(urls[index])
                 scr.clear()
                 return
-                 
+
             if index > j + (h - 5):
                 j += 1
             if index < j:
                 j -= 1
-    
+
     def view_text(self):
         pass
 
@@ -967,7 +967,7 @@ class Document(fitz.Document):
             except:
                 raise SystemExit('unable to open new kitty window')
 
-            end = monotonic() + 5 # 5 second time out 
+            end = monotonic() + 5 # 5 second time out
             while monotonic() < end:
                 try:
                     self.nvim = attach('socket', path=self.nvim_listen_address)
@@ -979,10 +979,10 @@ class Document(fitz.Document):
     def send_to_neovim(self,text,append=False):
         try:
             self.nvim.api.strwidth('testing')
-        except: 
+        except:
             self.init_neovim_bridge()
         if not self.nvim:
-            return 
+            return
         if append:
             line = self.nvim.funcs.line('$')
             self.nvim.funcs.append(line, text)
@@ -1021,7 +1021,7 @@ class status_bar:
         co_w = len(self.counter)
         me_w = w - cm_w - co_w - 2
         if len(self.message) > me_w:
-            self.message = self.message[:me_w - 1] + '…' 
+            self.message = self.message[:me_w - 1] + '…'
         self.bar = self.format.format(self.cmd, self.message, self.counter, me_w=me_w)
         scr.place_string(1,scr.rows,self.bar)
 
@@ -1113,7 +1113,7 @@ def write_chunked(cmd, data):
 def bib_from_field(field,regex):
 
     if shutil.which('bibtool') is not None:
-        from pybtex.database import parse_string 
+        from pybtex.database import parse_string
         select = "select {" + field + " "
         select = select + '\"{}\"'.format(regex)
         select = select + "}"
@@ -1123,21 +1123,21 @@ def bib_from_field(field,regex):
         bib = parse_string(text.stdout,'bibtex')
         if len(bib.entries) == 0:
             return None
-    else:   
+    else:
         from pybtex.database import parse_file
         bib = parse_file(config.BIBTEX,'bibtex')
 
     return bib
 
 def bib_from_key(citekeys):
-    
+
     field = '$key'
     regex = '\|'.join(citekeys)
     regex = '^' + regex + '$'
     return bib_from_field(field,regex)
 
 def citekey_from_path(path):
-    
+
     path = os.path.basename(path)
     bib = bib_from_field('File',path)
 
@@ -1187,7 +1187,7 @@ def print_help():
 
 def parse_args(args):
     files = []
-    opts = {'ignore_cache': False} 
+    opts = {'ignore_cache': False}
     if len(args) == 1:
         args = args + ['-h']
 
@@ -1197,7 +1197,7 @@ def parse_args(args):
         print_help()
     elif len({'-v', '--version'} & set(args)) != 0:
         print_version()
-    
+
     skip = False
     for i,arg in enumerate(args):
         if skip:
@@ -1243,7 +1243,7 @@ def parse_args(args):
                 else:
                     files += [path]
             else:
-                raise SystemExit('No file for ' + citekey) 
+                raise SystemExit('No file for ' + citekey)
             skip = True
         elif arg in {'--ignore-cache'}:
             opts['ignore_cache'] = True
@@ -1264,7 +1264,7 @@ def parse_args(args):
     return files, opts
 
 def clean_exit(message=''):
-    
+
     scr.create_text_win(1, ' ')
 
     for doc in bufs.docs:
@@ -1304,7 +1304,7 @@ def crop_to_selection(doc,left,right,selection):
 
 def visual_mode(doc,bar):
     l,t,r,b = doc.page_states[doc.page].place
-    
+
     width = (r - l) + 1
 
     def highlight_row(row,left,right, fill='▒', color='yellow'):
@@ -1345,10 +1345,10 @@ def visual_mode(doc,bar):
     right = width
     select = False
     selection = [current_row,current_row]
-    count_string = '' 
+    count_string = ''
 
     while True:
-       
+
         bar.cmd = count_string
         bar.update(doc)
         unhighlight_selection([t,b])
@@ -1362,9 +1362,9 @@ def visual_mode(doc,bar):
         else:
             count = int(count_string)
 
-        keys = shortcuts() 
+        keys = shortcuts()
         key = scr.stdscr.getch()
-      
+
         if key in range(48,58): #numerals
             count_string = count_string + chr(key)
 
@@ -1384,7 +1384,7 @@ def visual_mode(doc,bar):
             count_string = ''
 
         elif key in keys.NEXT_PAGE:
-            current_row += count 
+            current_row += count
             current_row = min(current_row,b)
             if select:
                 selection[1] = current_row
@@ -1393,14 +1393,14 @@ def visual_mode(doc,bar):
             count_string = ''
 
         elif key in keys.PREV_PAGE:
-            current_row -= count 
+            current_row -= count
             current_row = max(current_row,t)
             if select:
                 selection[1] = current_row
             else:
                 selection = [current_row,current_row]
             count_string = ''
-        
+
         elif key in keys.NEXT_CHAP:
             right = min(width,right + count)
             count_string = ''
@@ -1464,7 +1464,7 @@ def visual_mode(doc,bar):
             note_header = ' Notes on {}, {}'.format(doc.metadata['author'], doc.metadata['title'])
             if doc.citekey:
                 note_header = doc.citekey + note_header
-            select_text = ['** ' + note_header] 
+            select_text = ['** ' + note_header]
             select_text += ['']
             select_text = ['#+BEGIN_QUOTE']
             select_text += [get_text_in_rows(doc,left,right,selection)]
@@ -1473,7 +1473,7 @@ def visual_mode(doc,bar):
             doc.send_to_neovim(select_text,append=True)
             unhighlight_selection([t,b])
             return
-        
+
         elif key in keys.TOGGLE_AUTOCROP and selection != [None,None]:
             crop_to_selection(doc,left,right,selection)
             unhighlight_selection([t,b])
@@ -1488,7 +1488,7 @@ def watch_for_file_change(file_change,path):
         if nts != timestamp:
             timestamp = nts
             logging.debug('file changed')
-            file_change.set() 
+            file_change.set()
 
 def view(file_change,doc):
 
@@ -1507,7 +1507,7 @@ def view(file_change,doc):
 
     count_string = ""
     stack = [0]
-    keys = shortcuts() 
+    keys = shortcuts()
 
     while True:
 
@@ -1519,7 +1519,7 @@ def view(file_change,doc):
             count = 1
         else:
             count = int(count_string)
-        
+
         scr.stdscr.nodelay(True)
         key = scr.stdscr.getch()
         while key == -1 and not file_change.is_set():
@@ -1534,7 +1534,7 @@ def view(file_change,doc):
         if key == -1:
             pass
 
-        elif key in keys.REFRESH: 
+        elif key in keys.REFRESH:
             scr.clear()
             scr.get_size()
             scr.init_curses()
@@ -1691,7 +1691,7 @@ def view(file_change,doc):
             doc.mark_all_pages_stale()
             count_string = ""
             stack = [0]
-        
+
         elif key in keys.TOGGLE_TINT:
             doc.tint = not doc.tint
             doc.mark_all_pages_stale()
@@ -1707,7 +1707,7 @@ def view(file_change,doc):
             doc.show_meta(bar)
             count_string = ""
             stack = [0]
-        
+
         elif key in keys.SHOW_LINKS:
             doc.show_links(bar)
             count_string = ""
@@ -1717,13 +1717,13 @@ def view(file_change,doc):
             doc.view_text()
             count_string = ""
             stack = [0]
-       
+
         elif key in keys.INC_FONT:
             doc.set_layout(doc.papersize - count)
             doc.mark_all_pages_stale()
             count_string = ""
             stack = [0]
-        
+
         elif key in keys.DEC_FONT:
             doc.set_layout(doc.papersize + count)
             doc.mark_all_pages_stale()
@@ -1740,7 +1740,7 @@ def view(file_change,doc):
             doc.send_to_neovim(text,append=False)
             count_string = ""
             stack = [0]
-        
+
         elif key in keys.APPEND_NOTE:
             text = doc.make_link()
             doc.send_to_neovim(text,append=True)
@@ -1763,7 +1763,7 @@ def view(file_change,doc):
                 doc.first_page_offset = count - doc.page
             doc.pages_to_logical_pages()
             count_string = ""
-        
+
         elif key == ord('/'):
             scr.place_string(1,scr.rows,"/")
             curses.echo()
