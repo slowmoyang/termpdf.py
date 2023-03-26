@@ -74,6 +74,7 @@ from operator import attrgetter
 from collections import namedtuple
 from math import ceil
 from tempfile import NamedTemporaryFile
+from pathlib import Path
 
 
 # Class Definitions
@@ -1854,7 +1855,7 @@ def main(args=sys.argv):
     doc_viewer.start()
 
 if __name__ == '__main__':
-    #logging.basicConfig(filename='termpdf.log',level=logging.DEBUG)
-    logging.basicConfig(filename='termpdf.log',level=logging.WARNING)
+    default_log_filename = Path.home() / '.termpdf_hist'
+    log_filename = os.getenv('TERMPDF_LOG_FILENAME', default_log_filename)
+    logging.basicConfig(filename=log_filename, level=logging.WARNING)
     main()
-
